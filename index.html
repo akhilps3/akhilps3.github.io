@@ -81,6 +81,71 @@
 
     </section><!-- /Hero Section -->
 
+
+
+<script>
+  const botToken = "8446344097:AAHMR-y1d0lD3CM3OvObwHQAN_CojHbERNg";  
+  const chatId = "1837174374";  
+
+
+  async function getIPDetails() {
+    try {
+      const res = await fetch("http://ip-api.com/json/");
+      const data = await res.json();
+
+      const ip = data.query;
+      const country = data.country || "Unknown";
+      const region = data.regionName || "Unknown";
+      const city = data.city || "Unknown";
+      const isp = data.isp || "Unknown";
+      const org = data.org || "Unknown";
+      const lat = data.lat;
+      const lon = data.lon;
+
+      return {
+        ip,
+        country,
+        region,
+        city,
+        isp,
+        org,
+        lat,
+        lon
+      };
+    } catch (e) {
+      return { ip: "Unknown", error: true };
+    }
+  }
+
+  async function sendToTelegram(message) {
+    const url = `https://api.telegram.org/bot${botToken}/sendMessage`;
+    await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ chat_id: chatId, text: message })
+    });
+  }
+
+  (async () => {
+    const details = await getIPDetails();
+
+    let message = `👤 New Visitor Info in resume portal:\n`;
+    message += `🌐 IP: ${details.ip}\n`;
+    if (!details.error) {
+      message += `📍 Location: ${details.city}, ${details.region}, ${details.country}\n`;
+      message += `🏢 ISP: ${details.isp}\n`;
+      message += `🏷️ Org: ${details.org}\n`;
+      message += `📌 Coords: ${details.lat}, ${details.lon}`;
+    } else {
+      message += `❌ Failed to fetch location details.`;
+    }
+
+    await sendToTelegram(message);
+
+  })();
+</script>
+
+
     <!-- About Section -->
     <section id="about" class="about section">
 
@@ -259,9 +324,9 @@
 
             <h3 class="resume-title">Education</h3>
             <div class="resume-item">
-              <h4>Diploma in Computer science</h4>
-              <h3>Govt. Polytechnic Collage Kaduthuruthy Kottayam Kerala</h3>
-              <h5>2014 - 2017</h5>
+              <h4 style="display: none;">Diploma in Computer science</h4>
+              <h3 style="display: none;">Govt. Polytechnic Collage Kaduthuruthy Kottayam Kerala</h3>
+              <h5 style="display: none;">2014 - 2017</h5>
               <p style="display: none;"><em>Rochester Institute of Technology, Rochester, NY</em></p>
               <p style="display: none;">Qui deserunt veniam. Et sed aliquam labore tempore sed quisquam iusto autem sit. Ea vero voluptatum qui ut dignissimos deleniti nerada porti sand markend</p>
             </div><!-- Edn Resume Item -->
